@@ -6,24 +6,38 @@
 #    By: lbertran <lbertran@student.42lyon.fr>      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/11/18 16:40:32 by lbertran          #+#    #+#              #
-#    Updated: 2021/05/17 13:02:50 by lbertran         ###   ########lyon.fr    #
+#    Updated: 2021/06/17 08:59:44 by lbertran         ###   ########lyon.fr    #
 #                                                                              #
 # **************************************************************************** #
 
-all:
-	@${MAKE} -C ./srcs/philo_one
-	@${MAKE} -C ./srcs/philo_two
-	@${MAKE} -C ./srcs/philo_three
+SRC		= philo.c \
+			ft_atoi.c \
+			util.c
+SRCS 	= $(addprefix srcs/, ${SRC})
+OBJS	= ${SRCS:.c=.o}
+INCS	= includes
+NAME	= philo
+LIBC	= ar rcs
+CC		= gcc
+RM		= rm -f
+CFLAGS	= -Wall -Wextra -Werror -g3
+
+%.o: %.c ${INCS}/${NAME}.h
+	${CC} ${CFLAGS} -c $< -o $@ -I${INCS}
+
+${NAME}: ${OBJS}
+	${CC} -o ${NAME} ${OBJS}
+	
+all: ${NAME}
+
+bonus: all
 
 clean:
-	@${MAKE} clean -C ./srcs/philo_one
-	@${MAKE} clean -C ./srcs/philo_two
-	@${MAKE} clean -C ./srcs/philo_three
+	${RM} ${OBJS}
+	${RM} a.out
 
 fclean: clean
-	@${MAKE} fclean -C ./srcs/philo_one
-	@${MAKE} fclean -C ./srcs/philo_two
-	@${MAKE} fclean -C ./srcs/philo_three
+	${RM} ${NAME}
 
 re: fclean all
 	
