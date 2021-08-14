@@ -6,7 +6,7 @@
 /*   By: lbertran <lbertran@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/17 08:22:21 by lbertran          #+#    #+#             */
-/*   Updated: 2021/06/28 13:41:48 by lbertran         ###   ########lyon.fr   */
+/*   Updated: 2021/08/14 15:34:38 by lbertran         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@
 # include <unistd.h>
 # include <pthread.h>
 # include <limits.h>
+# include <stdlib.h>
 
 typedef struct s_philo
 {
@@ -34,6 +35,7 @@ typedef struct s_philo
 	int				lfork;
 	int				rfork;
 	pthread_t		thread;
+	id_t			tid;
 	struct s_game	*game;
 }				t_philo;
 
@@ -49,10 +51,13 @@ typedef struct s_game
 	t_philo			*philos;
 	pthread_mutex_t	*fork_mutex;
 	pthread_mutex_t	speak_mutex;
+	pthread_mutex_t	eat_mutex;
+	int				eat_counter;
+	int				sync;
 }				t_game;
 
 int			ft_atoi(const char *str);
-long long	current_millis(void);
+uint64_t	current_millis(void);
 long		time_elapsed(t_game *game);
 int			error(char *msg);
 void		print_msg(t_philo *philo, char *msg);

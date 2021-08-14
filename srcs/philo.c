@@ -6,57 +6,122 @@
 /*   By: lbertran <lbertran@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/17 08:22:07 by lbertran          #+#    #+#             */
-/*   Updated: 2021/06/28 13:52:48 by lbertran         ###   ########lyon.fr   */
+/*   Updated: 2021/08/14 15:46:26 by lbertran         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void	monitor(t_philo *philo)
+int	monitor(t_game *game)
 {
-	while (1)
+	int	i;
+
+	i = 0;
+	while (i < game->amount_of_philos)
 	{
-		if (current_millis() - philo->last_eat > philo->game->time_to_die)
+		if (game->eat_counter == game->amount_of_philos)
+			return (0);
+		pthread_mutex_lock(&game->eat_mutex);
+		if ((long)current_millis() - game->philos[i].last_eat
+			> game->time_to_die)
 		{
-			philo->game->ended = 1;
-			print_msg(philo, "died");
+			game->ended = 1;
+			print_msg(&game->philos[i], "died");
+			return (0);
 		}
+		pthread_mutex_unlock(&game->eat_mutex);
+		i++;
+		usleep(200);
 	}
+	return (1);
 }
 
-void	routine(t_philo *philo)
+void	synchronize(t_philo *philo)
 {
-	pthread_t	tid;
+	while (!philo->game->sync)
+		usleep(1000);
+	if (philo->id % 2 == 1)
+		usleep(2000);
+}
 
-	pthread_create(&tid, NULL, &monitor, philo);
-	while (1)
+void	custom_usleep(long time)
+{
+	uint64_t	current;
+
+	current = current_millis();
+	while (current + time > current_millis())
+		usleep(20);
+}
+
+void	*routine(void *arg)
+{
+	t_philo	*philo;
+
+	philo = (t_philo *)arg;
+	synchronize(philo);
+	while (!philo->game->ended
+		&& philo->game->eat_counter < philo->game->amount_of_philos)
 	{
 		pthread_mutex_lock(&philo->game->fork_mutex[philo->lfork]);
 		print_msg(philo, "has taken a fork");
 		pthread_mutex_lock(&philo->game->fork_mutex[philo->rfork]);
 		print_msg(philo, "has taken a fork");
-		usleep(philo->game->time_to_eat * 1000);
+		print_msg(philo, "is eating");
+		pthread_mutex_lock(&philo->game->eat_mutex);
+		philo->last_eat = current_millis();
+		philo->eat_count++;
+		if (philo->game->must_eat_times && philo->eat_count
+			== philo->game->must_eat_times)
+			philo->game->eat_counter++;
+		pthread_mutex_unlock(&philo->game->eat_mutex);
+		custom_usleep(philo->game->time_to_eat);
+		pthread_mutex_unlock(&philo->game->fork_mutex[philo->lfork]);
+		pthread_mutex_unlock(&philo->game->fork_mutex[philo->rfork]);
+		print_msg(philo, "is sleeping");
+		custom_usleep(philo->game->time_to_sleep);
+		print_msg(philo, "is thinking");
 	}
+	return (NULL);
+}
+
+void	end_game(t_game *game)
+{
+	int	i;
+
+	i = 0;
+	custom_usleep(game->time_to_eat + game->time_to_sleep + 20);
+	while (i < game->amount_of_philos)
+		pthread_mutex_destroy(&game->fork_mutex[i++]);
+	free(game->philos);
+	free(game->fork_mutex);
+	pthread_mutex_destroy(&game->eat_mutex);
+	pthread_mutex_destroy(&game->speak_mutex);
 }
 
 void	init_philos(t_game *game)
 {
 	int			i;
-	pthread_t	tid;
 
 	i = 0;
 	game->philos = malloc(sizeof(t_philo) * game->amount_of_philos);
+	game->fork_mutex = malloc(sizeof(pthread_mutex_t) * game->amount_of_philos);
 	while (i < game->amount_of_philos)
 	{
+		pthread_mutex_init(&game->fork_mutex[i], NULL);
 		game->philos[i].id = i + 1;
 		game->philos[i].state = SLEEPING;
-		game->philos[i].thread = pthread_create(&tid, NULL, &routine, &game->philos[i]);
-		pthread_detach(tid);
 		game->philos[i].game = game;
 		game->philos[i].lfork = i;
 		game->philos[i].rfork = (i + 1) % game->amount_of_philos;
-		pthread_mutex_init(&game->fork_mutex[i], NULL);
+		game->philos[i].tid = pthread_create(&game->philos[i].thread, NULL, \
+			routine, &game->philos[i]);
+		i++;
 	}
+	game->start_time = current_millis();
+	i = 0;
+	while (i < game->amount_of_philos)
+		game->philos[i++].last_eat = game->start_time;
+	game->sync = 1;
 }
 
 int	parse_args(int ac, char **av, t_game *game)
@@ -66,12 +131,17 @@ int	parse_args(int ac, char **av, t_game *game)
 	game->time_to_eat = ft_atoi(av[3]);
 	game->time_to_sleep = ft_atoi(av[4]);
 	if (ac == 6)
+	{
 		game->must_eat_times = ft_atoi(av[5]);
+		if (game->must_eat_times == -1)
+			return (0);
+	}
 	else
-		game->must_eat_times = 0;
+		game->must_eat_times = -1;
 	if (game->time_to_die < 60 || game->time_to_eat < 60
 		|| game->time_to_sleep < 60 || game->amount_of_philos < 1
-		|| game->amount_of_philos > 200 || game->must_eat_times < 0)
+		|| game->amount_of_philos > 200
+		|| (game->must_eat_times < 0 && game->must_eat_times != -1))
 		return (0);
 	return (1);
 }
@@ -82,11 +152,15 @@ int	main(int ac, char **av)
 
 	if (ac != 5 && ac != 6)
 		return (error("Error: wrong number of arguments."));
-	game.start_time = current_millis();
 	game.ended = 0;
+	game.eat_counter = 0;
+	pthread_mutex_init(&game.eat_mutex, NULL);
 	if (!parse_args(ac, av, &game))
 		return (error("Error: invalid argument."));
+	game.sync = 0;
 	init_philos(&game);
-	usleep(10000);
-	printf("%s%lu%s Simulation started\n", RED, time_elapsed(&game), RESET);
+	while (monitor(&game))
+		;
+	end_game(&game);
+	return (0);
 }
