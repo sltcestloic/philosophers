@@ -6,7 +6,7 @@
 /*   By: lbertran <lbertran@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/17 08:22:07 by lbertran          #+#    #+#             */
-/*   Updated: 2021/08/14 15:46:26 by lbertran         ###   ########lyon.fr   */
+/*   Updated: 2021/08/15 12:32:47 by lbertran         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -155,6 +155,7 @@ int	main(int ac, char **av)
 	game.ended = 0;
 	game.eat_counter = 0;
 	pthread_mutex_init(&game.eat_mutex, NULL);
+	pthread_mutex_init(&game.speak_mutex, NULL);
 	if (!parse_args(ac, av, &game))
 		return (error("Error: invalid argument."));
 	game.sync = 0;
