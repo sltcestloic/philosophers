@@ -6,7 +6,7 @@
 /*   By: lbertran <lbertran@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/17 08:22:21 by lbertran          #+#    #+#             */
-/*   Updated: 2021/08/14 15:34:38 by lbertran         ###   ########lyon.fr   */
+/*   Updated: 2021/08/15 12:38:20 by lbertran         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,11 @@ typedef struct s_game
 
 int			ft_atoi(const char *str);
 uint64_t	current_millis(void);
-long		time_elapsed(t_game *game);
 int			error(char *msg);
 void		print_msg(t_philo *philo, char *msg);
+void		custom_usleep(long time);
+void		synchronize(t_philo *philo);
+void		*routine(void *arg);
+void		init_philos(t_game *game);
+void		end_game(t_game *game);
 #endif

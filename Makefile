@@ -6,11 +6,12 @@
 #    By: lbertran <lbertran@student.42lyon.fr>      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/11/18 16:40:32 by lbertran          #+#    #+#              #
-#    Updated: 2021/08/14 14:13:01 by lbertran         ###   ########lyon.fr    #
+#    Updated: 2021/08/15 12:38:35 by lbertran         ###   ########lyon.fr    #
 #                                                                              #
 # **************************************************************************** #
 
 SRC		= philo.c \
+			game.c \
 			ft_atoi.c \
 			util.c
 SRCS 	= $(addprefix srcs/, ${SRC})

@@ -6,7 +6,7 @@
 /*   By: lbertran <lbertran@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/17 08:22:07 by lbertran          #+#    #+#             */
-/*   Updated: 2021/08/15 12:32:47 by lbertran         ###   ########lyon.fr   */
+/*   Updated: 2021/08/15 12:39:41 by lbertran         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,21 +36,15 @@ int	monitor(t_game *game)
 	return (1);
 }
 
-void	synchronize(t_philo *philo)
+void	routine2(t_philo *philo)
 {
-	while (!philo->game->sync)
-		usleep(1000);
-	if (philo->id % 2 == 1)
-		usleep(2000);
-}
-
-void	custom_usleep(long time)
-{
-	uint64_t	current;
-
-	current = current_millis();
-	while (current + time > current_millis())
-		usleep(20);
+	pthread_mutex_unlock(&philo->game->eat_mutex);
+	custom_usleep(philo->game->time_to_eat);
+	pthread_mutex_unlock(&philo->game->fork_mutex[philo->lfork]);
+	pthread_mutex_unlock(&philo->game->fork_mutex[philo->rfork]);
+	print_msg(philo, "is sleeping");
+	custom_usleep(philo->game->time_to_sleep);
+	print_msg(philo, "is thinking");
 }
 
 void	*routine(void *arg)
@@ -73,55 +67,9 @@ void	*routine(void *arg)
 		if (philo->game->must_eat_times && philo->eat_count
 			== philo->game->must_eat_times)
 			philo->game->eat_counter++;
-		pthread_mutex_unlock(&philo->game->eat_mutex);
-		custom_usleep(philo->game->time_to_eat);
-		pthread_mutex_unlock(&philo->game->fork_mutex[philo->lfork]);
-		pthread_mutex_unlock(&philo->game->fork_mutex[philo->rfork]);
-		print_msg(philo, "is sleeping");
-		custom_usleep(philo->game->time_to_sleep);
-		print_msg(philo, "is thinking");
+		routine2(philo);
 	}
 	return (NULL);
-}
-
-void	end_game(t_game *game)
-{
-	int	i;
-
-	i = 0;
-	custom_usleep(game->time_to_eat + game->time_to_sleep + 20);
-	while (i < game->amount_of_philos)
-		pthread_mutex_destroy(&game->fork_mutex[i++]);
-	free(game->philos);
-	free(game->fork_mutex);
-	pthread_mutex_destroy(&game->eat_mutex);
-	pthread_mutex_destroy(&game->speak_mutex);
-}
-
-void	init_philos(t_game *game)
-{
-	int			i;
-
-	i = 0;
-	game->philos = malloc(sizeof(t_philo) * game->amount_of_philos);
-	game->fork_mutex = malloc(sizeof(pthread_mutex_t) * game->amount_of_philos);
-	while (i < game->amount_of_philos)
-	{
-		pthread_mutex_init(&game->fork_mutex[i], NULL);
-		game->philos[i].id = i + 1;
-		game->philos[i].state = SLEEPING;
-		game->philos[i].game = game;
-		game->philos[i].lfork = i;
-		game->philos[i].rfork = (i + 1) % game->amount_of_philos;
-		game->philos[i].tid = pthread_create(&game->philos[i].thread, NULL, \
-			routine, &game->philos[i]);
-		i++;
-	}
-	game->start_time = current_millis();
-	i = 0;
-	while (i < game->amount_of_philos)
-		game->philos[i++].last_eat = game->start_time;
-	game->sync = 1;
 }
 
 int	parse_args(int ac, char **av, t_game *game)
