@@ -6,7 +6,7 @@
 /*   By: lbertran <lbertran@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/17 08:22:07 by lbertran          #+#    #+#             */
-/*   Updated: 2021/08/15 12:39:41 by lbertran         ###   ########lyon.fr   */
+/*   Updated: 2021/11/13 08:37:50 by lbertran         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,8 @@ int	monitor(t_game *game)
 		if ((long)current_millis() - game->philos[i].last_eat
 			> game->time_to_die)
 		{
-			game->ended = 1;
 			print_msg(&game->philos[i], "died");
+			game->ended = 1;
 			return (0);
 		}
 		pthread_mutex_unlock(&game->eat_mutex);
