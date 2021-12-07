@@ -6,7 +6,7 @@
 /*   By: lbertran <lbertran@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/15 12:37:30 by lbertran          #+#    #+#             */
-/*   Updated: 2021/12/07 13:26:18 by lbertran         ###   ########lyon.fr   */
+/*   Updated: 2021/12/07 13:40:23 by lbertran         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ void	end_game(t_game *game)
 			while (i < game->amount_of_philos)
 				kill(game->pids[i++], SIGKILL);
 	}
+	free(game->pids);
 }
 
 void	init_philos(t_game *game)
