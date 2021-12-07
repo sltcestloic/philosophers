@@ -6,7 +6,7 @@
 /*   By: lbertran <lbertran@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/17 08:22:07 by lbertran          #+#    #+#             */
-/*   Updated: 2021/12/07 13:24:43 by lbertran         ###   ########lyon.fr   */
+/*   Updated: 2021/12/07 13:45:28 by lbertran         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,7 +107,8 @@ int	main(int ac, char **av)
 	if (!parse_args(ac, av, &game))
 		return (error("Error: invalid argument."));
 	game.sync = 0;
-	init_philos(&game);
+	if (!init_philos(&game))
+		return (error("Malloc error."));
 	while (monitor(&game))
 		;
 	end_game(&game);

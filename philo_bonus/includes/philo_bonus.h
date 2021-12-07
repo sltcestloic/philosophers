@@ -6,7 +6,7 @@
 /*   By: lbertran <lbertran@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/17 08:22:21 by lbertran          #+#    #+#             */
-/*   Updated: 2021/12/07 13:25:48 by lbertran         ###   ########lyon.fr   */
+/*   Updated: 2021/12/07 13:45:38 by lbertran         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ void		print_msg(t_philo *philo, char *msg);
 void		custom_usleep(long time);
 void		synchronize(t_philo *philo);
 void		routine(t_game *game);
-void		init_philos(t_game *game);
+int			init_philos(t_game *game);
 void		end_game(t_game *game);
 void		*monitor(void *game);
 #endif

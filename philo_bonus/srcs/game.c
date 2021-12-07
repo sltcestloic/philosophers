@@ -6,7 +6,7 @@
 /*   By: lbertran <lbertran@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/15 12:37:30 by lbertran          #+#    #+#             */
-/*   Updated: 2021/12/07 13:40:23 by lbertran         ###   ########lyon.fr   */
+/*   Updated: 2021/12/07 13:45:58 by lbertran         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ void	end_game(t_game *game)
 	free(game->pids);
 }
 
-void	init_philos(t_game *game)
+int	init_philos(t_game *game)
 {
 	int	i;
 
@@ -39,6 +39,8 @@ void	init_philos(t_game *game)
 	game->philo.eat_count = 0;
 	game->philo.game = game;
 	game->pids = malloc(sizeof(int) * game->amount_of_philos);
+	if (game->pids)
+		return (0);
 	while (i < game->amount_of_philos)
 	{
 		game->pids[i] = fork();
@@ -51,4 +53,5 @@ void	init_philos(t_game *game)
 			game->philo.id += 1;
 		i++;
 	}
+	return (1);
 }

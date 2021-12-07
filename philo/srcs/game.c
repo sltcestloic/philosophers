@@ -6,7 +6,7 @@
 /*   By: lbertran <lbertran@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/15 12:37:30 by lbertran          #+#    #+#             */
-/*   Updated: 2021/12/07 13:41:52 by lbertran         ###   ########lyon.fr   */
+/*   Updated: 2021/12/07 13:45:09 by lbertran         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,13 +26,15 @@ void	end_game(t_game *game)
 	pthread_mutex_destroy(&game->speak_mutex);
 }
 
-void	init_philos(t_game *game)
+int	init_philos(t_game *game)
 {
 	int			i;
 
 	i = 0;
 	game->philos = malloc(sizeof(t_philo) * game->amount_of_philos);
 	game->fork_mutex = malloc(sizeof(pthread_mutex_t) * game->amount_of_philos);
+	if (!game->philos || !game->fork_mutex)
+		return (0);
 	while (i < game->amount_of_philos)
 	{
 		pthread_mutex_init(&game->fork_mutex[i], NULL);
@@ -49,4 +51,5 @@ void	init_philos(t_game *game)
 	while (i < game->amount_of_philos)
 		game->philos[i++].last_eat = game->start_time;
 	game->sync = 1;
+	return (1);
 }

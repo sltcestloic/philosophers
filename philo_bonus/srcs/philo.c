@@ -6,7 +6,7 @@
 /*   By: lbertran <lbertran@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/17 08:22:07 by lbertran          #+#    #+#             */
-/*   Updated: 2021/12/07 13:32:13 by lbertran         ###   ########lyon.fr   */
+/*   Updated: 2021/12/07 13:46:31 by lbertran         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,7 +100,8 @@ int	main(int ac, char **av)
 	sem_unlink("/philo_eating");
 	game.start_time = current_millis();
 	game.philo.last_eat = current_millis();
-	init_philos(&game);
+	if (!init_philos(&game))
+		return (error("Malloc error."));
 	end_game(&game);
 	return (0);
 }
