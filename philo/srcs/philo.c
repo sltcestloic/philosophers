@@ -6,7 +6,7 @@
 /*   By: lbertran <lbertran@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/17 08:22:07 by lbertran          #+#    #+#             */
-/*   Updated: 2021/12/07 13:45:28 by lbertran         ###   ########lyon.fr   */
+/*   Updated: 2021/12/07 13:54:47 by lbertran         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,7 @@ void	*routine(void *arg)
 		pthread_mutex_lock(&philo->game->eat_mutex);
 		philo->last_eat = current_millis();
 		philo->eat_count++;
+		printf("eat count=%d\n", philo->eat_count);
 		if (philo->game->must_eat_times && philo->eat_count
 			== philo->game->must_eat_times)
 			philo->game->eat_counter++;

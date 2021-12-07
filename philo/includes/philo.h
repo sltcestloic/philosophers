@@ -6,7 +6,7 @@
 /*   By: lbertran <lbertran@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/17 08:22:21 by lbertran          #+#    #+#             */
-/*   Updated: 2021/12/07 13:44:36 by lbertran         ###   ########lyon.fr   */
+/*   Updated: 2021/12/07 13:56:25 by lbertran         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ typedef struct s_philo
 	long			last_eat;
 	int				lfork;
 	int				rfork;
-	pthread_t		thread;
+	pthread_t		thrd;
 	id_t			tid;
 	struct s_game	*game;
 }				t_philo;

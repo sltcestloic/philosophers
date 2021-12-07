@@ -6,7 +6,7 @@
 /*   By: lbertran <lbertran@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/15 12:37:30 by lbertran          #+#    #+#             */
-/*   Updated: 2021/12/07 13:45:09 by lbertran         ###   ########lyon.fr   */
+/*   Updated: 2021/12/07 13:56:28 by lbertran         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,8 +42,8 @@ int	init_philos(t_game *game)
 		game->philos[i].game = game;
 		game->philos[i].lfork = i;
 		game->philos[i].rfork = (i + 1) % game->amount_of_philos;
-		game->philos[i].tid = pthread_create(&game->philos[i].thread, NULL, \
-			routine, &game->philos[i]);
+		game->philos[i].eat_count = 0;
+		pthread_create(&game->philos[i].thrd, NULL, routine, &game->philos[i]);
 		i++;
 	}
 	game->start_time = current_millis();
