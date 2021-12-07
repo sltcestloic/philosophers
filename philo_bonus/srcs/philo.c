@@ -6,7 +6,7 @@
 /*   By: lbertran <lbertran@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/17 08:22:07 by lbertran          #+#    #+#             */
-/*   Updated: 2021/12/03 14:57:40 by lbertran         ###   ########lyon.fr   */
+/*   Updated: 2021/12/07 13:32:13 by lbertran         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,19 +14,17 @@
 
 void	*monitor(void *arg)
 {
-	t_game *game;
+	t_game	*game;
 
 	game = (t_game *)arg;
 	while (42)
 	{
 		sem_wait(game->eating);
-		if (game->philo.eat_count == game->must_eat_times)
-			exit (2);
-		else if ((long)current_millis() - game->philo.last_eat
+		if ((long)current_millis() - game->philo.last_eat
 			> game->time_to_die)
 		{
 			print_msg(&game->philo, "died");
-			exit (1);
+			exit(1);
 		}
 		sem_post(game->eating);
 		usleep(200);
@@ -49,6 +47,8 @@ void	routine(t_game *game)
 		custom_usleep(game->time_to_eat);
 		sem_post(game->fork);
 		sem_post(game->fork);
+		if (game->philo.eat_count == game->must_eat_times)
+			exit(2);
 		print_msg(&game->philo, "is sleeping");
 		custom_usleep(game->time_to_sleep);
 		print_msg(&game->philo, "is thinking");
@@ -64,7 +64,7 @@ int	parse_args(int ac, char **av, t_game *game)
 	if (ac == 6)
 	{
 		game->must_eat_times = ft_atoi(av[5]);
-		if (game->must_eat_times == -1)
+		if (game->must_eat_times == 0)
 			return (0);
 	}
 	else
@@ -86,10 +86,17 @@ int	main(int ac, char **av)
 	if (!parse_args(ac, av, &game))
 		return (error("Error: invalid argument."));
 	game.voice = sem_open("/philo_voice", O_CREAT, S_IRWXU, 1);
+	if (game.voice == SEM_FAILED)
+		return (error("Error: unable to open semaphore."));
 	sem_unlink("/philo_voice");
-	game.fork = sem_open("/philo_fork", O_CREAT, S_IRWXU, game.amount_of_philos);
+	game.fork = sem_open("/philo_fork", O_CREAT, S_IRWXU, \
+		game.amount_of_philos);
+	if (game.fork == SEM_FAILED)
+		return (error("Error: unable to open semaphore."));
 	sem_unlink("/philo_fork");
 	game.eating = sem_open("/philo_eating", O_CREAT, S_IRWXU, 1);
+	if (game.eating == SEM_FAILED)
+		return (error("Error: unable to open semaphore."));
 	sem_unlink("/philo_eating");
 	game.start_time = current_millis();
 	game.philo.last_eat = current_millis();

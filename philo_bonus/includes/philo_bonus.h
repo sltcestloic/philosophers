@@ -6,12 +6,12 @@
 /*   By: lbertran <lbertran@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/17 08:22:21 by lbertran          #+#    #+#             */
-/*   Updated: 2021/12/03 15:05:38 by lbertran         ###   ########lyon.fr   */
+/*   Updated: 2021/12/07 13:25:48 by lbertran         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PHILO_H
-# define PHILO_H
+#ifndef PHILO_BONUS_H
+# define PHILO_BONUS_H
 # define EATING 1
 # define THINKING 2
 # define SLEEPING 3
@@ -61,5 +61,5 @@ void		synchronize(t_philo *philo);
 void		routine(t_game *game);
 void		init_philos(t_game *game);
 void		end_game(t_game *game);
-void 		*monitor(void *game);
+void		*monitor(void *game);
 #endif
