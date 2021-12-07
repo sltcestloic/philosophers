@@ -6,7 +6,7 @@
 /*   By: lbertran <lbertran@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/17 08:22:21 by lbertran          #+#    #+#             */
-/*   Updated: 2021/08/15 12:38:20 by lbertran         ###   ########lyon.fr   */
+/*   Updated: 2021/12/03 13:50:35 by lbertran         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,11 +27,9 @@
 
 typedef struct s_philo
 {
-	int				state;
 	int				id;
 	int				eat_count;
 	long			last_eat;
-	long			death_time;
 	int				lfork;
 	int				rfork;
 	pthread_t		thread;

@@ -6,7 +6,7 @@
 /*   By: lbertran <lbertran@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/15 12:37:30 by lbertran          #+#    #+#             */
-/*   Updated: 2021/09/13 13:24:39 by lbertran         ###   ########lyon.fr   */
+/*   Updated: 2021/12/03 13:39:42 by lbertran         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,6 @@ void	init_philos(t_game *game)
 	{
 		pthread_mutex_init(&game->fork_mutex[i], NULL);
 		game->philos[i].id = i + 1;
-		game->philos[i].state = SLEEPING;
 		game->philos[i].game = game;
 		game->philos[i].lfork = i;
 		game->philos[i].rfork = (i + 1) % game->amount_of_philos;

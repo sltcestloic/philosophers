@@ -6,7 +6,7 @@
 /*   By: lbertran <lbertran@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/17 08:22:07 by lbertran          #+#    #+#             */
-/*   Updated: 2021/11/13 08:37:50 by lbertran         ###   ########lyon.fr   */
+/*   Updated: 2021/12/07 13:24:43 by lbertran         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,7 @@ int	parse_args(int ac, char **av, t_game *game)
 	if (ac == 6)
 	{
 		game->must_eat_times = ft_atoi(av[5]);
-		if (game->must_eat_times == -1)
+		if (game->must_eat_times == 0)
 			return (0);
 	}
 	else
